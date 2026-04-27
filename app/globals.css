@@ -57,15 +57,15 @@
     
     --radius: 0.5rem;
     
-    /* Sidebar - Dark Blue-Slate (warmer) */
-    --sidebar-background: 213 33% 17%; /* #1E2A3A */
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 43 55% 54%; /* #C9A84C muted gold */
-    --sidebar-primary-foreground: 213 33% 17%;
-    --sidebar-accent: 213 33% 23%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 100% / 0.08;
-    --sidebar-ring: 43 55% 54%;
+    /* Sidebar - White in light mode */
+    --sidebar-background: 0 0% 100%; /* White */
+    --sidebar-foreground: 0 0% 10%; /* Dark text */
+    --sidebar-primary: 212 57% 40%; /* Blue - same as primary */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 40 15% 96%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 40 10% 90%;
+    --sidebar-ring: 212 57% 40%;
   }
   
   .dark {
@@ -104,15 +104,15 @@
     --input: 0 0% 100% / 0.07;
     --ring: 212 50% 55%;
     
-    /* Sidebar - Darker variant */
-    --sidebar-background: 214 40% 7%; /* #0A1219 */
+    /* Sidebar - Dark variant */
+    --sidebar-background: 214 32% 15%; /* Same as card in dark */
     --sidebar-foreground: 35 25% 93%;
-    --sidebar-primary: 43 55% 54%; /* #C9A84C muted gold */
-    --sidebar-primary-foreground: 214 40% 7%;
-    --sidebar-accent: 214 35% 12%;
+    --sidebar-primary: 212 50% 55%; /* Blue - same as primary */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 214 32% 20%;
     --sidebar-accent-foreground: 35 25% 93%;
     --sidebar-border: 0 0% 100% / 0.08;
-    --sidebar-ring: 43 55% 54%;
+    --sidebar-ring: 212 50% 55%;
   }
 }
 

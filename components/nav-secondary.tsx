@@ -25,7 +25,7 @@ export function NavSecondary({
           <SidebarMenuButton 
             asChild 
             tooltip={item.title}
-            className="h-9 text-white/65 hover:text-white/85 hover:bg-white/[0.06] transition-colors"
+            className="h-9 text-sidebar-foreground/65 hover:text-sidebar-foreground/85 hover:bg-sidebar-accent transition-colors"
           >
             <a href={item.url}>
               <item.icon className="!size-4" strokeWidth={1.75} />

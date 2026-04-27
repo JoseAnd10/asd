@@ -27,13 +27,13 @@ export function NavMain({
 
   return (
     <>
-      {/* New Case Button - Muted gold */}
+      {/* New Case Button - Blue primary */}
       <SidebarMenu className="mb-2">
         <SidebarMenuItem>
           <SidebarMenuButton
             asChild
             tooltip="Nuevo asunto"
-            className="bg-[#C9A84C] text-[#1E2A3A] hover:bg-[#B89A3E] h-9 font-medium"
+            className="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90 h-9 font-medium"
           >
             <Link href="/asuntos/new">
               <Plus className="!size-4" strokeWidth={2.5} />
@@ -55,8 +55,8 @@ export function NavMain({
                 isActive={isActive}
                 className={`h-9 transition-colors ${
                   isActive 
-                    ? "bg-white/[0.12] border-l-2 border-[#C9A84C] text-white" 
-                    : "text-white/65 hover:bg-white/[0.06] hover:text-white/85"
+                    ? "bg-sidebar-accent border-l-2 border-sidebar-primary text-sidebar-foreground" 
+                    : "text-sidebar-foreground/65 hover:bg-sidebar-accent hover:text-sidebar-foreground/85"
                 }`}
               >
                 <Link href={item.url}>

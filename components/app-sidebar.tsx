@@ -103,14 +103,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       
       <SidebarContent className="px-2">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-white/35 px-2">
+          <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/40 px-2">
             Principal
           </SidebarGroupLabel>
           <NavMain items={data.navMain} />
         </SidebarGroup>
         
         <SidebarGroup className="mt-auto">
-          <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-white/35 px-2">
+          <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/40 px-2">
             Configuración
           </SidebarGroupLabel>
           <NavSecondary items={data.navSecondary} />
