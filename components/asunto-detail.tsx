@@ -8,14 +8,12 @@ import {
   Clock,
   File,
   FileText,
-  MessageSquare,
   Send,
   Sparkles,
   Upload,
   User,
   Bot,
   Circle,
-  Scale,
 } from "lucide-react"
 import Link from "next/link"
 import { useState, useRef } from "react"
@@ -140,11 +138,11 @@ const caseInfo = {
 function getStatusBadge(estado: string) {
   switch (estado) {
     case "activo":
-      return <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-0">Activo</Badge>
+      return <Badge className="bg-[#EAF3DE] text-success hover:bg-[#EAF3DE] border-0">Activo</Badge>
     case "en_espera":
-      return <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-200 border-0 dark:bg-amber-900/30 dark:text-amber-500">En espera</Badge>
+      return <Badge className="bg-[#FEF3E2] text-warning hover:bg-[#FEF3E2] border-0">En espera</Badge>
     case "cerrado":
-      return <Badge variant="secondary">Cerrado</Badge>
+      return <Badge variant="secondary" className="text-muted-foreground">Cerrado</Badge>
     default:
       return <Badge variant="outline">{estado}</Badge>
   }
@@ -153,13 +151,13 @@ function getStatusBadge(estado: string) {
 function getUrgenciaBadge(urgencia: string) {
   switch (urgencia) {
     case "vencido":
-      return <Badge className="bg-destructive/10 text-destructive border-0 hover:bg-destructive/20">Vencido</Badge>
+      return <Badge className="bg-[#FCEBEB] text-destructive border-0 hover:bg-[#FCEBEB]">Vencido</Badge>
     case "hoy":
-      return <Badge className="bg-amber-100 text-amber-700 border-0 hover:bg-amber-200 dark:bg-amber-900/30 dark:text-amber-500">Hoy</Badge>
+      return <Badge className="border border-destructive text-destructive bg-transparent hover:bg-transparent">Hoy</Badge>
     case "proximo":
-      return <Badge className="bg-primary/10 text-primary border-0 hover:bg-primary/20">7 días</Badge>
+      return <Badge className="bg-[#FEF3E2] text-warning border-0 hover:bg-[#FEF3E2]">Próximo</Badge>
     case "pendiente":
-      return <Badge variant="secondary" className="border-0">Pendiente</Badge>
+      return <Badge variant="secondary" className="border-0 text-muted-foreground">Pendiente</Badge>
     default:
       return <Badge variant="outline">{urgencia}</Badge>
   }
@@ -169,9 +167,9 @@ function getConfidenceBadge(confidence: string | null) {
   if (!confidence) return null
   switch (confidence) {
     case "alta":
-      return <Badge className="bg-primary/10 text-primary border-0 text-[10px] font-semibold">Alta confianza</Badge>
+      return <Badge className="bg-success/10 text-success border-0 text-[10px] font-semibold">Alta confianza</Badge>
     case "media":
-      return <Badge className="bg-amber-100 text-amber-700 border-0 text-[10px] font-semibold dark:bg-amber-900/30 dark:text-amber-500">Media</Badge>
+      return <Badge className="bg-warning/10 text-warning border-0 text-[10px] font-semibold">Media</Badge>
     case "baja":
       return <Badge variant="secondary" className="border-0 text-[10px] font-semibold">Baja</Badge>
     default:
@@ -222,7 +220,7 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-3">
-              <h1 className="font-serif text-2xl font-bold tracking-tight text-foreground">{titulo}</h1>
+              <h1 className="text-xl font-semibold tracking-tight text-foreground">{titulo}</h1>
               {getStatusBadge(estado)}
             </div>
             <p className="text-sm text-muted-foreground">
@@ -230,7 +228,7 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="border-border/60">
+            <Button variant="outline" size="sm">
               <FileText className="mr-2 size-4" />
               Generar informe
             </Button>
@@ -244,95 +242,15 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
 
       {/* Split View Layout */}
       <div className="grid gap-6 lg:grid-cols-5">
-        {/* Left Column - Timeline */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Case Info Card */}
-          <Card className="border-border/60 shadow-soft">
-            <CardHeader className="pb-3">
-              <CardTitle className="font-serif text-lg">Información del caso</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Juzgado</p>
-                  <p className="font-medium text-foreground">{caseInfo.juzgado}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Procedimiento</p>
-                  <p className="font-medium text-foreground">{caseInfo.procedimiento}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Cuantía</p>
-                  <p className="font-medium text-foreground">{caseInfo.cuantia}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Contraparte</p>
-                  <p className="font-medium text-foreground">{caseInfo.contraParte}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Timeline */}
-          <Card className="border-border/60 shadow-soft">
-            <CardHeader className="pb-3">
-              <CardTitle className="font-serif text-lg">Cronología procesal</CardTitle>
-              <CardDescription>Hitos y etapas del procedimiento</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative space-y-0">
-                {hitos.map((hito, index) => (
-                  <div key={hito.id} className="relative flex gap-4 pb-6 last:pb-0">
-                    {/* Vertical line */}
-                    {index < hitos.length - 1 && (
-                      <div className={`absolute left-[15px] top-8 h-[calc(100%-16px)] w-px ${
-                        hito.completado ? "bg-primary" : "bg-border"
-                      }`} />
-                    )}
-                    
-                    {/* Icon */}
-                    <div className={`relative z-10 flex size-8 flex-shrink-0 items-center justify-center rounded-full ring-4 ring-card ${
-                      hito.completado
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground border border-border"
-                    }`}>
-                      {hito.completado ? (
-                        <CheckCircle2 className="size-4" strokeWidth={2.5} />
-                      ) : (
-                        <Circle className="size-3" strokeWidth={2} />
-                      )}
-                    </div>
-                    
-                    {/* Content */}
-                    <div className="flex-1 pt-0.5">
-                      <p className={`font-medium leading-tight ${
-                        hito.completado ? "text-foreground" : "text-muted-foreground"
-                      }`}>
-                        {hito.titulo}
-                      </p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {hito.fecha ? formatDate(hito.fecha) : "Pendiente"}
-                      </p>
-                      <p className="mt-1.5 text-sm text-muted-foreground">
-                        {hito.descripcion}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right Column - Details Panel & AI Chat */}
+        {/* Left Column - Plazos, Documentos & AI Chat */}
         <div className="lg:col-span-3 space-y-6">
           {/* Tab selector */}
-          <div className="flex gap-1 rounded-lg bg-muted/50 p-1">
+          <div className="flex gap-1 rounded-lg bg-muted p-1">
             <button
               onClick={() => setActiveTab("plazos")}
               className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all ${
                 activeTab === "plazos"
-                  ? "bg-card text-foreground shadow-soft"
+                  ? "bg-card text-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -343,7 +261,7 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
               onClick={() => setActiveTab("documentos")}
               className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all ${
                 activeTab === "documentos"
-                  ? "bg-card text-foreground shadow-soft"
+                  ? "bg-card text-foreground"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -354,14 +272,14 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
 
           {/* Plazos Panel */}
           {activeTab === "plazos" && (
-            <Card className="border-border/60 shadow-soft">
+            <Card className="border rounded-lg">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle className="font-serif text-lg">Plazos procesales</CardTitle>
+                    <CardTitle className="text-base font-semibold">Plazos procesales</CardTitle>
                     <CardDescription>Fechas límite y vencimientos detectados</CardDescription>
                   </div>
-                  <Badge variant="outline" className="gap-1.5 border-primary/30 text-primary">
+                  <Badge variant="outline" className="gap-1.5 text-primary">
                     <Sparkles className="size-3" />
                     2 detectados por IA
                   </Badge>
@@ -375,8 +293,8 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
                       value={plazo.id}
                       className={`rounded-lg border px-4 ${
                         plazo.aiDetected 
-                          ? "border-primary/20 bg-gradient-to-r from-primary/[0.03] to-transparent" 
-                          : "border-border/60"
+                          ? "border-primary/30 bg-primary/5" 
+                          : ""
                       }`}
                     >
                       <AccordionTrigger className="hover:no-underline py-3">
@@ -409,7 +327,7 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
                       </AccordionTrigger>
                       {plazo.fundamento && (
                         <AccordionContent className="pb-4 pt-0">
-                          <div className="ml-11 rounded-lg bg-muted/50 p-3 text-sm">
+                          <div className="ml-11 rounded-lg bg-muted p-3 text-sm">
                             <p className="font-medium text-foreground mb-1">Fundamento legal</p>
                             <p className="text-muted-foreground">{plazo.fundamento}</p>
                           </div>
@@ -424,16 +342,16 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
 
           {/* Documentos Panel */}
           {activeTab === "documentos" && (
-            <Card className="border-border/60 shadow-soft">
+            <Card className="border rounded-lg">
               <CardHeader className="pb-3">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <CardTitle className="font-serif text-lg">Documentos</CardTitle>
+                    <CardTitle className="text-base font-semibold">Documentos</CardTitle>
                     <CardDescription>Archivos del expediente</CardDescription>
                   </div>
                   <div className="flex gap-2">
                     <Select value={documentFilter} onValueChange={setDocumentFilter}>
-                      <SelectTrigger className="w-32 h-9 border-border/60">
+                      <SelectTrigger className="w-32 h-9">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -450,7 +368,7 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="mb-4 rounded-lg border-2 border-dashed border-border/60 bg-muted/30 p-6 text-center transition-colors hover:border-primary/30 hover:bg-muted/50">
+                <div className="mb-4 rounded-lg border-2 border-dashed bg-muted/30 p-6 text-center transition-colors hover:bg-muted/50">
                   <Upload className="mx-auto mb-2 size-8 text-muted-foreground/60" />
                   <p className="text-sm text-muted-foreground">
                     Arrastra archivos aquí o haz clic para seleccionar
@@ -460,10 +378,10 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
                 <Table>
                   <TableHeader>
                     <TableRow className="hover:bg-transparent">
-                      <TableHead className="text-[11px] font-semibold uppercase tracking-wider">Nombre</TableHead>
-                      <TableHead className="text-[11px] font-semibold uppercase tracking-wider">Tipo</TableHead>
-                      <TableHead className="text-[11px] font-semibold uppercase tracking-wider">Fecha</TableHead>
-                      <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-right">Tamaño</TableHead>
+                      <TableHead className="text-xs font-semibold uppercase tracking-wider">Nombre</TableHead>
+                      <TableHead className="text-xs font-semibold uppercase tracking-wider">Tipo</TableHead>
+                      <TableHead className="text-xs font-semibold uppercase tracking-wider">Fecha</TableHead>
+                      <TableHead className="text-xs font-semibold uppercase tracking-wider text-right">Tamaño</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -478,7 +396,7 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="capitalize border-border/60 font-normal">
+                          <Badge variant="secondary" className="capitalize font-normal">
                             {doc.type}
                           </Badge>
                         </TableCell>
@@ -496,23 +414,17 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
             </Card>
           )}
 
-          {/* AI Chat - Glassmorphism Style */}
-          <Card className="relative overflow-hidden border-border/60 bg-gradient-to-br from-card via-card to-primary/[0.02] shadow-soft">
-            {/* Decorative gradient border */}
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-            
+          {/* AI Chat - Flat Design */}
+          <Card className="border rounded-lg">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-soft">
-                  <Scale className="size-5 text-primary-foreground" strokeWidth={1.5} />
+                <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                  <Bot className="size-5" strokeWidth={1.5} />
                 </div>
                 <div>
-                  <CardTitle className="font-serif text-lg">Asistente Kairos</CardTitle>
+                  <CardTitle className="text-base font-semibold">Asistente Kairos</CardTitle>
                   <CardDescription className="flex items-center gap-1.5">
-                    <span className="relative flex size-2">
-                      <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-75"></span>
-                      <span className="relative inline-flex size-2 rounded-full bg-primary"></span>
-                    </span>
+                    <span className="size-2 rounded-full bg-success" />
                     IA especializada en este expediente
                   </CardDescription>
                 </div>
@@ -542,7 +454,7 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
                         className={`max-w-[85%] rounded-2xl px-4 py-2.5 ${
                           message.role === "user"
                             ? "bg-foreground text-background rounded-br-md"
-                            : "bg-muted/70 backdrop-blur-sm border border-border/40 rounded-bl-md"
+                            : "bg-muted border rounded-bl-md"
                         }`}
                       >
                         <p className="text-sm whitespace-pre-line leading-relaxed">{message.content}</p>
@@ -553,18 +465,98 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
                 </div>
 
                 {/* Input area */}
-                <div className="flex gap-2 border-t border-border/60 pt-4">
+                <div className="flex gap-2 border-t pt-4">
                   <Input
                     placeholder="Pregunta sobre este expediente..."
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
-                    className="flex-1 border-border/60 bg-muted/30 focus:bg-card"
+                    className="flex-1"
                   />
                   <Button size="icon" className="shrink-0">
                     <Send className="size-4" />
                     <span className="sr-only">Enviar</span>
                   </Button>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column - Case Info & Timeline */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Case Info Card */}
+          <Card className="border rounded-lg">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold">Información del caso</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Juzgado</p>
+                  <p className="font-medium text-foreground">{caseInfo.juzgado}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Procedimiento</p>
+                  <p className="font-medium text-foreground">{caseInfo.procedimiento}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Cuantía</p>
+                  <p className="font-medium text-foreground">{caseInfo.cuantia}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Contraparte</p>
+                  <p className="font-medium text-foreground">{caseInfo.contraParte}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Timeline */}
+          <Card className="border rounded-lg">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold">Cronología procesal</CardTitle>
+              <CardDescription>Hitos y etapas del procedimiento</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="relative space-y-0">
+                {hitos.map((hito, index) => (
+                  <div key={hito.id} className="relative flex gap-4 pb-6 last:pb-0">
+                    {/* Vertical line */}
+                    {index < hitos.length - 1 && (
+                      <div className={`absolute left-[15px] top-8 h-[calc(100%-16px)] w-px ${
+                        hito.completado ? "bg-primary" : "bg-border"
+                      }`} />
+                    )}
+                    
+                    {/* Icon */}
+                    <div className={`relative z-10 flex size-8 flex-shrink-0 items-center justify-center rounded-full ring-4 ring-card ${
+                      hito.completado
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground border"
+                    }`}>
+                      {hito.completado ? (
+                        <CheckCircle2 className="size-4" strokeWidth={2.5} />
+                      ) : (
+                        <Circle className="size-3" strokeWidth={2} />
+                      )}
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="flex-1 pt-0.5">
+                      <p className={`font-medium leading-tight ${
+                        hito.completado ? "text-foreground" : "text-muted-foreground"
+                      }`}>
+                        {hito.titulo}
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        {hito.fecha ? formatDate(hito.fecha) : "Pendiente"}
+                      </p>
+                      <p className="mt-1.5 text-sm text-muted-foreground">
+                        {hito.descripcion}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>

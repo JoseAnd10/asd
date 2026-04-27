@@ -9,6 +9,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 export function NavMain({
@@ -21,20 +22,22 @@ export function NavMain({
   }[]
 }) {
   const pathname = usePathname()
+  const { state } = useSidebar()
+  const isCollapsed = state === "collapsed"
 
   return (
     <>
-      {/* New Case Button */}
+      {/* New Case Button - Blue primary */}
       <SidebarMenu className="mb-2">
         <SidebarMenuItem>
           <SidebarMenuButton
             asChild
             tooltip="Nuevo asunto"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground h-9 font-medium shadow-soft transition-all duration-200"
+            className="bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90 h-9 font-medium"
           >
             <Link href="/asuntos/new">
               <Plus className="!size-4" strokeWidth={2.5} />
-              <span>Nuevo asunto</span>
+              {!isCollapsed && <span>Nuevo asunto</span>}
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
@@ -50,10 +53,14 @@ export function NavMain({
                 asChild 
                 tooltip={item.title}
                 isActive={isActive}
-                className="h-9 transition-colors"
+                className={`h-9 transition-colors ${
+                  isActive 
+                    ? "bg-sidebar-accent border-l-2 border-sidebar-primary text-sidebar-foreground" 
+                    : "text-sidebar-foreground/65 hover:bg-sidebar-accent hover:text-sidebar-foreground/85"
+                }`}
               >
                 <Link href={item.url}>
-                  {item.icon && <item.icon className="!size-[18px]" strokeWidth={1.75} />}
+                  {item.icon && <item.icon className="!size-4" strokeWidth={1.75} />}
                   <span className="font-medium">{item.title}</span>
                 </Link>
               </SidebarMenuButton>
