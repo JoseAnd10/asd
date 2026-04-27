@@ -55,34 +55,34 @@ export function NavUser({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-12 transition-colors"
+              className="data-[state=open]:bg-sidebar-accent h-12 transition-colors"
             >
-              <Avatar className="h-9 w-9 rounded-lg ring-1 ring-border/40">
+              <Avatar className="h-9 w-9 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-semibold text-sm">
+                <AvatarFallback className="rounded-lg bg-sidebar-accent text-sidebar-foreground font-semibold text-sm">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold text-foreground">{user.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
+                <span className="truncate font-semibold text-sidebar-foreground">{user.name}</span>
+                <span className="text-sidebar-foreground/60 truncate text-xs">
                   {user.email}
                 </span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
+              <ChevronsUpDown className="ml-auto size-4 text-sidebar-foreground/60" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-xl border-border/60 shadow-soft-lg"
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg border"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={8}
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-3 px-2 py-2.5 text-left text-sm">
-                <Avatar className="h-10 w-10 rounded-lg ring-1 ring-border/40">
+                <Avatar className="h-10 w-10 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-semibold">
+                  <AvatarFallback className="rounded-lg bg-muted text-foreground font-semibold">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
@@ -94,7 +94,7 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-border/60" />
+            <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem className="gap-2 py-2">
                 <User className="size-4 text-muted-foreground" />
@@ -113,7 +113,7 @@ export function NavUser({
                 <span>Notificaciones</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator className="bg-border/60" />
+            <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 py-2 text-destructive focus:text-destructive">
               <LogOut className="size-4" />
               <span>Cerrar sesión</span>

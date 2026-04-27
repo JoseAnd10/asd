@@ -1,6 +1,6 @@
 "use client"
 
-import { AlertTriangle, Clock, Calendar, MoreHorizontal, ArrowRight, Sparkles } from "lucide-react"
+import { MoreHorizontal, ArrowRight, Sparkles } from "lucide-react"
 import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
@@ -31,9 +31,11 @@ import {
 const deadlines = [
   {
     id: "1",
+    tipo: "Demanda",
     plazo: "Contestación demanda",
     asunto: "García vs. Seguros ABC",
     asuntoId: "asunto-1",
+    cliente: "Juan García",
     expediente: "2024/0847",
     vence: "2024-01-15",
     estado: "vencido",
@@ -41,9 +43,11 @@ const deadlines = [
   },
   {
     id: "2",
+    tipo: "Prueba",
     plazo: "Presentar prueba documental",
     asunto: "Herencia Martínez",
     asuntoId: "asunto-2",
+    cliente: "Ana Martínez",
     expediente: "2024/0912",
     vence: "2024-01-16",
     estado: "hoy",
@@ -51,9 +55,11 @@ const deadlines = [
   },
   {
     id: "3",
+    tipo: "Audiencia",
     plazo: "Audiencia preliminar",
     asunto: "Despido improcedente López",
     asuntoId: "asunto-3",
+    cliente: "Pedro López",
     expediente: "2024/0756",
     vence: "2024-01-18",
     estado: "proximo",
@@ -61,9 +67,11 @@ const deadlines = [
   },
   {
     id: "4",
+    tipo: "Recurso",
     plazo: "Recurso de apelación",
     asunto: "Accidente tráfico Ruiz",
     asuntoId: "asunto-4",
+    cliente: "María Ruiz",
     expediente: "2024/0634",
     vence: "2024-01-20",
     estado: "pendiente",
@@ -71,9 +79,11 @@ const deadlines = [
   },
   {
     id: "5",
+    tipo: "Vista",
     plazo: "Vista oral",
     asunto: "Contrato mercantil Díaz",
     asuntoId: "asunto-5",
+    cliente: "Carlos Díaz",
     expediente: "2024/0521",
     vence: "2024-01-22",
     estado: "pendiente",
@@ -84,38 +94,15 @@ const deadlines = [
 function getStatusBadge(estado: string) {
   switch (estado) {
     case "vencido":
-      return <Badge className="bg-destructive/10 text-destructive border-0 hover:bg-destructive/20 font-medium">Vencido</Badge>
+      return <Badge className="bg-[#FCEBEB] text-destructive border-0 hover:bg-[#FCEBEB] font-medium">Vencido</Badge>
     case "hoy":
-      return <Badge className="bg-amber-100 text-amber-700 border-0 hover:bg-amber-200 font-medium dark:bg-amber-900/30 dark:text-amber-500">Hoy</Badge>
+      return <Badge className="border border-destructive text-destructive bg-transparent hover:bg-transparent font-medium">Hoy</Badge>
     case "proximo":
-      return <Badge className="bg-primary/10 text-primary border-0 hover:bg-primary/20 font-medium">7 días</Badge>
+      return <Badge className="bg-[#FEF3E2] text-warning border-0 hover:bg-[#FEF3E2] font-medium">Próximo</Badge>
     case "pendiente":
-      return <Badge variant="secondary" className="border-0 font-medium">Pendiente</Badge>
+      return <Badge variant="secondary" className="border-0 font-medium text-muted-foreground">Pendiente</Badge>
     default:
       return <Badge variant="outline">{estado}</Badge>
-  }
-}
-
-function getStatusIcon(estado: string) {
-  switch (estado) {
-    case "vencido":
-      return (
-        <div className="flex size-9 items-center justify-center rounded-lg bg-destructive/10">
-          <AlertTriangle className="size-4 text-destructive" strokeWidth={2} />
-        </div>
-      )
-    case "hoy":
-      return (
-        <div className="flex size-9 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/30">
-          <Clock className="size-4 text-amber-600 dark:text-amber-500" strokeWidth={2} />
-        </div>
-      )
-    default:
-      return (
-        <div className="flex size-9 items-center justify-center rounded-lg bg-muted">
-          <Calendar className="size-4 text-muted-foreground" strokeWidth={2} />
-        </div>
-      )
   }
 }
 
@@ -124,32 +111,34 @@ function formatDate(dateString: string) {
   return date.toLocaleDateString("es-ES", {
     day: "numeric",
     month: "short",
-    year: "numeric",
   })
 }
 
-function getDaysUntil(dateString: string) {
+function getRelativeDate(dateString: string, estado: string) {
+  if (estado === "hoy") return "Hoy"
+  if (estado === "vencido") return "Vencido"
+  
   const date = new Date(dateString)
   const today = new Date()
   const diff = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-  if (diff < 0) return `${Math.abs(diff)}d vencido`
-  if (diff === 0) return "Hoy"
+  
   if (diff === 1) return "Mañana"
-  return `${diff} días`
+  if (diff <= 7) return `En ${diff} días`
+  return formatDate(dateString)
 }
 
 export function DeadlinesTable() {
   return (
-    <Card className="mx-4 border-border/60 shadow-soft lg:mx-6">
+    <Card className="mx-4 border rounded-lg lg:mx-6">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="font-serif text-xl">Vencimientos próximos</CardTitle>
-            <CardDescription className="mt-1">
-              Plazos y fechas importantes de tus asuntos activos
+            <CardTitle className="text-base font-semibold">Plazos próximos</CardTitle>
+            <CardDescription className="mt-1 text-sm">
+              Fechas importantes de tus asuntos activos
             </CardDescription>
           </div>
-          <Button variant="outline" size="sm" className="border-border/60">
+          <Button variant="ghost" size="sm" className="text-primary hover:text-primary">
             Ver todos
             <ArrowRight className="ml-2 size-4" />
           </Button>
@@ -158,74 +147,61 @@ export function DeadlinesTable() {
       <CardContent>
         <Table>
           <TableHeader>
-            <TableRow className="hover:bg-transparent border-border/60">
-              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground w-12"></TableHead>
-              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Plazo</TableHead>
-              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Asunto</TableHead>
-              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Vence</TableHead>
-              <TableHead className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Estado</TableHead>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tipo</TableHead>
+              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Asunto</TableHead>
+              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Cliente</TableHead>
+              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Vence</TableHead>
+              <TableHead className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Estado</TableHead>
               <TableHead className="w-12">
                 <span className="sr-only">Acciones</span>
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {deadlines.map((deadline) => {
-              // Urgency-based background colors
-              const getUrgencyBackground = () => {
-                switch (deadline.estado) {
-                  case "vencido":
-                    return "bg-red-50 hover:bg-red-100/80 dark:bg-red-950/30 dark:hover:bg-red-950/50"
-                  case "hoy":
-                    return "bg-amber-50 hover:bg-amber-100/80 dark:bg-amber-950/30 dark:hover:bg-amber-950/50"
-                  case "proximo":
-                    return "bg-emerald-50/50 hover:bg-emerald-100/60 dark:bg-emerald-950/20 dark:hover:bg-emerald-950/40"
-                  default:
-                    return "bg-card hover:bg-muted/50"
-                }
-              }
-              
-              return (
+            {deadlines.map((deadline) => (
               <TableRow 
                 key={deadline.id} 
-                className={`group cursor-pointer border-border/40 transition-colors ${getUrgencyBackground()}`}
+                className="group cursor-pointer hover:bg-muted/50"
               >
-                <TableCell className="py-4">
-                  {getStatusIcon(deadline.estado)}
+                <TableCell className="py-3">
+                  <Badge variant="secondary" className="font-normal text-muted-foreground">
+                    {deadline.tipo}
+                  </Badge>
                 </TableCell>
-                <TableCell className="py-4">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground">{deadline.plazo}</span>
-                    {deadline.aiDetected && (
-                      <Sparkles className="size-3.5 text-primary" />
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell className="py-4">
+                <TableCell className="py-3">
                   <Link
                     href={`/asuntos/${deadline.asuntoId}`}
                     className="group/link"
                   >
-                    <span className="text-foreground group-hover/link:text-primary transition-colors">{deadline.asunto}</span>
-                    <span className="ml-2 font-mono text-xs text-muted-foreground">{deadline.expediente}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-foreground group-hover/link:text-primary transition-colors">
+                        {deadline.asunto}
+                      </span>
+                      {deadline.aiDetected && (
+                        <Sparkles className="size-3.5 text-primary" />
+                      )}
+                    </div>
+                    <span className="font-mono text-xs text-muted-foreground">{deadline.expediente}</span>
                   </Link>
                 </TableCell>
-                <TableCell className="py-4">
-                  <div className="space-y-0.5">
-                    <p className="font-medium tabular-nums text-foreground">
-                      {formatDate(deadline.vence)}
+                <TableCell className="py-3 text-foreground">
+                  {deadline.cliente}
+                </TableCell>
+                <TableCell className="py-3">
+                  <div>
+                    <p className={`text-sm ${deadline.estado === "vencido" ? "text-destructive font-medium" : "text-foreground"}`}>
+                      {getRelativeDate(deadline.vence, deadline.estado)}
                     </p>
-                    <p className={`text-xs ${
-                      deadline.estado === "vencido" ? "text-destructive font-medium" :
-                      deadline.estado === "hoy" ? "text-amber-600 dark:text-amber-500 font-medium" :
-                      "text-muted-foreground"
-                    }`}>
-                      {getDaysUntil(deadline.vence)}
-                    </p>
+                    {deadline.estado !== "vencido" && deadline.estado !== "hoy" && (
+                      <p className="text-xs text-muted-foreground">
+                        {formatDate(deadline.vence)}
+                      </p>
+                    )}
                   </div>
                 </TableCell>
-                <TableCell className="py-4">{getStatusBadge(deadline.estado)}</TableCell>
-                <TableCell className="py-4">
+                <TableCell className="py-3">{getStatusBadge(deadline.estado)}</TableCell>
+                <TableCell className="py-3">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button 
@@ -239,11 +215,10 @@ export function DeadlinesTable() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48">
                       <DropdownMenuItem>
-                        <ArrowRight className="mr-2 size-4" />
-                        Ver asunto
+                        Ver
                       </DropdownMenuItem>
-                      <DropdownMenuItem>Marcar completado</DropdownMenuItem>
-                      <DropdownMenuItem>Editar plazo</DropdownMenuItem>
+                      <DropdownMenuItem>Editar</DropdownMenuItem>
+                      <DropdownMenuItem>Archivar</DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem className="text-destructive focus:text-destructive">
                         Eliminar
@@ -252,8 +227,7 @@ export function DeadlinesTable() {
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-              )
-            })}
+            ))}
           </TableBody>
         </Table>
       </CardContent>

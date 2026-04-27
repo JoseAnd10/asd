@@ -7,11 +7,9 @@ import {
   FileText,
   HelpCircle,
   LayoutDashboard,
-  Scale,
   Search,
   Settings,
   Users,
-  Sparkles,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -90,15 +88,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton
               asChild
               tooltip="Kairos Legal"
-              className="data-[slot=sidebar-menu-button]:!p-2 hover:bg-transparent group"
+              className="data-[slot=sidebar-menu-button]:!p-2 hover:bg-sidebar-accent group"
             >
               <a href="/overview" className="flex items-center gap-3">
-                <div className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-soft transition-transform group-hover:scale-105">
-                  <Scale className="!size-5 text-primary-foreground" strokeWidth={1.5} />
-                </div>
                 <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-                  <span className="font-serif text-base font-semibold tracking-tight text-foreground">Kairos</span>
-                  <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">Legal Platform</span>
+                  <span className="text-base font-medium tracking-tight text-sidebar-foreground">KAIROS</span>
+                  <span className="text-[11px] text-sidebar-foreground/60">Legal Platform</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -108,14 +103,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       
       <SidebarContent className="px-2">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 px-2">
+          <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/50 px-2">
             Principal
           </SidebarGroupLabel>
           <NavMain items={data.navMain} />
         </SidebarGroup>
         
         <SidebarGroup className="mt-auto">
-          <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70 px-2">
+          <SidebarGroupLabel className="text-[10px] font-semibold uppercase tracking-wider text-sidebar-foreground/50 px-2">
             Configuración
           </SidebarGroupLabel>
           <NavSecondary items={data.navSecondary} />

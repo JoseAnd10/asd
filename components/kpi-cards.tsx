@@ -1,51 +1,56 @@
 "use client"
 
-import { AlertTriangle, Clock, Briefcase, TrendingUp, TrendingDown, Minus, Calendar } from "lucide-react"
+import { AlertTriangle, Clock, Briefcase, Calendar } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
 interface KpiData {
   label: string
   value: number
-  trend?: number
-  trendDirection?: "up" | "down" | "neutral"
   description: string
   icon: React.ElementType
   variant: "critical" | "warning" | "info" | "success"
+  items?: { name: string; date: string; type: string }[]
 }
 
 const kpiData: KpiData[] = [
   {
-    label: "Vencen Hoy",
+    label: "Vence hoy",
     value: 3,
-    trend: 2,
-    trendDirection: "up",
     description: "Requieren acción inmediata",
     icon: AlertTriangle,
     variant: "critical",
+    items: [
+      { name: "Contestación demanda - García", date: "Hoy", type: "Demanda" },
+      { name: "Recurso apelación - López", date: "Hoy", type: "Recurso" },
+      { name: "Prueba documental - Ruiz", date: "Hoy", type: "Prueba" },
+    ],
   },
   {
     label: "Próximas 48h",
     value: 7,
-    trend: 1,
-    trendDirection: "down",
     description: "Plazos en las próximas 48 horas",
     icon: Clock,
     variant: "warning",
+    items: [
+      { name: "Vista oral - Díaz", date: "Mañana", type: "Vista" },
+      { name: "Alegaciones - Martínez", date: "En 2 días", type: "Escrito" },
+    ],
   },
   {
-    label: "Esta Semana",
+    label: "Esta semana",
     value: 12,
-    trend: 0,
-    trendDirection: "neutral",
     description: "Plazos en los próximos 7 días",
     icon: Calendar,
     variant: "info",
+    items: [
+      { name: "Audiencia previa - Sánchez", date: "En 5 días", type: "Audiencia" },
+      { name: "Demanda laboral - Pérez", date: "En 6 días", type: "Demanda" },
+    ],
   },
   {
-    label: "Asuntos Activos",
+    label: "Asuntos activos",
     value: 24,
-    trend: 3,
-    trendDirection: "up",
     description: "Expedientes en tramitación",
     icon: Briefcase,
     variant: "success",
@@ -54,54 +59,25 @@ const kpiData: KpiData[] = [
 
 const variantStyles = {
   critical: {
-    iconBg: "bg-gradient-to-br from-destructive/15 to-destructive/5",
-    iconColor: "text-destructive",
-    valueBg: "bg-gradient-to-r from-destructive/10 via-transparent to-transparent",
-    border: "border-l-destructive",
-    ring: "ring-destructive/10",
+    border: "border-l-4 border-l-destructive",
+    badge: "bg-[#FCEBEB] text-destructive",
+    value: "text-destructive",
   },
   warning: {
-    iconBg: "bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-900/10",
-    iconColor: "text-amber-600 dark:text-amber-500",
-    valueBg: "bg-gradient-to-r from-amber-50 via-transparent to-transparent dark:from-amber-900/20",
-    border: "border-l-amber-500",
-    ring: "ring-amber-500/10",
+    border: "border-l-4 border-l-warning",
+    badge: "bg-[#FEF3E2] text-warning",
+    value: "text-warning",
   },
   info: {
-    iconBg: "bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-800 dark:to-slate-800/50",
-    iconColor: "text-slate-600 dark:text-slate-400",
-    valueBg: "bg-gradient-to-r from-slate-50 via-transparent to-transparent dark:from-slate-800/30",
-    border: "border-l-slate-400",
-    ring: "ring-slate-400/10",
+    border: "border-l-4 border-l-primary",
+    badge: "bg-primary/10 text-primary",
+    value: "text-primary",
   },
   success: {
-    iconBg: "bg-gradient-to-br from-primary/15 to-primary/5",
-    iconColor: "text-primary",
-    valueBg: "bg-gradient-to-r from-primary/5 via-transparent to-transparent",
-    border: "border-l-primary",
-    ring: "ring-primary/10",
+    border: "border-l-4 border-l-success",
+    badge: "bg-[#EAF3DE] text-success",
+    value: "text-success",
   },
-}
-
-function TrendIndicator({ trend, direction }: { trend: number; direction?: "up" | "down" | "neutral" }) {
-  if (direction === "neutral" || trend === 0) {
-    return (
-      <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
-        <Minus className="size-3" />
-        Sin cambios
-      </span>
-    )
-  }
-  
-  const isUp = direction === "up"
-  return (
-    <span className={`inline-flex items-center gap-1 text-xs font-semibold ${
-      isUp ? "text-destructive" : "text-primary"
-    }`}>
-      {isUp ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
-      {isUp ? "+" : "-"}{Math.abs(trend)} vs ayer
-    </span>
-  )
 }
 
 export function KpiCards() {
@@ -109,45 +85,45 @@ export function KpiCards() {
     <div className="grid gap-4 px-4 sm:grid-cols-2 lg:px-6 xl:grid-cols-4">
       {kpiData.map((kpi) => {
         const styles = variantStyles[kpi.variant]
-        const Icon = kpi.icon
         
         return (
           <Card 
             key={kpi.label} 
-            className={`group relative overflow-hidden border border-border/60 border-l-[3px] ${styles.border} shadow-soft hover:shadow-soft-md transition-all duration-200`}
+            className={`border rounded-lg ${styles.border}`}
           >
-            {/* Background Icon - Subtle and compact */}
-            <div className="pointer-events-none absolute -right-2 -top-2 opacity-[0.04] transition-transform duration-300 group-hover:scale-110">
-              <Icon className="size-20" strokeWidth={1.5} />
-            </div>
-            
-            <CardContent className="relative p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
-                    {kpi.label}
-                  </p>
-                  
-                  <div className={`inline-block rounded-lg px-3 py-1.5 ${styles.valueBg}`}>
-                    <span className="font-serif text-[42px] font-bold leading-none tracking-tight text-foreground">
-                      {kpi.value}
-                    </span>
-                  </div>
-                  
-                  <div className="space-y-2 pt-1">
-                    <p className="text-[13px] text-muted-foreground">
-                      {kpi.description}
-                    </p>
-                    {kpi.trend !== undefined && (
-                      <TrendIndicator trend={kpi.trend} direction={kpi.trendDirection} />
-                    )}
-                  </div>
-                </div>
-                
-                <div className={`flex size-12 flex-shrink-0 items-center justify-center rounded-xl ${styles.iconBg} ring-1 ${styles.ring}`}>
-                  <Icon className={`size-5 ${styles.iconColor}`} strokeWidth={2} />
-                </div>
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between mb-3">
+                <Badge className={`${styles.badge} border-0 text-xs font-medium`}>
+                  {kpi.value} plazos
+                </Badge>
+                <span className="text-xs text-muted-foreground">{kpi.label}</span>
               </div>
+              
+              <div className="mb-3">
+                <span className={`text-3xl font-semibold ${styles.value}`}>
+                  {kpi.value}
+                </span>
+              </div>
+              
+              <p className="text-[13px] text-muted-foreground mb-3">
+                {kpi.description}
+              </p>
+              
+              {kpi.items && kpi.items.length > 0 && (
+                <div className="space-y-2 pt-2 border-t">
+                  {kpi.items.slice(0, 2).map((item, index) => (
+                    <div key={index} className="flex items-center justify-between text-sm">
+                      <span className="text-foreground truncate max-w-[60%]">{item.name}</span>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">
+                          {item.type}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">{item.date}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         )
