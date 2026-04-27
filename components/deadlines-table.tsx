@@ -94,11 +94,11 @@ const deadlines = [
 function getStatusBadge(estado: string) {
   switch (estado) {
     case "vencido":
-      return <Badge className="bg-[#FCEBEB] text-destructive border-0 hover:bg-[#FCEBEB] font-medium">Vencido</Badge>
+      return <Badge className="bg-[#FCEBEB] text-[#C0392B] dark:bg-[#C0392B]/20 dark:text-[#FF6B5B] border-0 hover:bg-[#FCEBEB] dark:hover:bg-[#C0392B]/20 font-medium">Vencido</Badge>
     case "hoy":
-      return <Badge className="border border-destructive text-destructive bg-transparent hover:bg-transparent font-medium">Hoy</Badge>
+      return <Badge className="border border-[#C0392B] text-[#C0392B] dark:border-[#FF6B5B] dark:text-[#FF6B5B] bg-transparent hover:bg-transparent font-medium">Hoy</Badge>
     case "proximo":
-      return <Badge className="bg-[#FEF3E2] text-warning border-0 hover:bg-[#FEF3E2] font-medium">Próximo</Badge>
+      return <Badge className="bg-[#FEF3E2] text-[#D4860A] dark:bg-[#D4860A]/20 dark:text-[#FFAA33] border-0 hover:bg-[#FEF3E2] dark:hover:bg-[#D4860A]/20 font-medium">Próximo</Badge>
     case "pendiente":
       return <Badge variant="secondary" className="border-0 font-medium text-muted-foreground">Pendiente</Badge>
     default:
@@ -114,17 +114,37 @@ function formatDate(dateString: string) {
   })
 }
 
-function getRelativeDate(dateString: string, estado: string) {
-  if (estado === "hoy") return "Hoy"
-  if (estado === "vencido") return "Vencido"
-  
+function formatFullDate(dateString: string) {
+  const date = new Date(dateString)
+  return date.toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  })
+}
+
+function getRelativeDate(dateString: string) {
   const date = new Date(dateString)
   const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  date.setHours(0, 0, 0, 0)
+  
   const diff = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
   
-  if (diff === 1) return "Mañana"
-  if (diff <= 7) return `En ${diff} días`
-  return formatDate(dateString)
+  // Today
+  if (diff === 0) return { text: "Hoy", isUrgent: true, isOverdue: false }
+  
+  // Tomorrow
+  if (diff === 1) return { text: "Mañana", isUrgent: true, isOverdue: false }
+  
+  // Overdue (past dates)
+  if (diff < 0) return { text: formatDate(dateString), isUrgent: true, isOverdue: true }
+  
+  // Within 7 days
+  if (diff <= 7) return { text: `En ${diff} días`, isUrgent: true, isOverdue: false }
+  
+  // Far future (>7 days)
+  return { text: formatFullDate(dateString), isUrgent: false, isOverdue: false }
 }
 
 export function DeadlinesTable() {
@@ -159,75 +179,78 @@ export function DeadlinesTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {deadlines.map((deadline) => (
-              <TableRow 
-                key={deadline.id} 
-                className="group cursor-pointer hover:bg-muted/50"
-              >
-                <TableCell className="py-3">
-                  <Badge variant="secondary" className="font-normal text-muted-foreground">
-                    {deadline.tipo}
-                  </Badge>
-                </TableCell>
-                <TableCell className="py-3">
-                  <Link
-                    href={`/asuntos/${deadline.asuntoId}`}
-                    className="group/link"
-                  >
+            {deadlines.map((deadline) => {
+              const dateInfo = getRelativeDate(deadline.vence)
+              return (
+                <TableRow 
+                  key={deadline.id} 
+                  className="group cursor-pointer hover:bg-muted/50"
+                >
+                  <TableCell className="py-3">
+                    <Badge variant="secondary" className="font-normal text-muted-foreground">
+                      {deadline.tipo}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="py-3">
+                    <Link
+                      href={`/asuntos/${deadline.asuntoId}`}
+                      className="group/link"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-foreground group-hover/link:text-primary transition-colors">
+                          {deadline.asunto}
+                        </span>
+                        {deadline.aiDetected && (
+                          <Sparkles className="size-3.5 text-primary" />
+                        )}
+                      </div>
+                      <span className="font-mono text-xs text-muted-foreground">{deadline.expediente}</span>
+                    </Link>
+                  </TableCell>
+                  <TableCell className="py-3 text-foreground">
+                    {deadline.cliente}
+                  </TableCell>
+                  <TableCell className="py-3">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-foreground group-hover/link:text-primary transition-colors">
-                        {deadline.asunto}
+                      <span className={`text-sm ${dateInfo.isOverdue || deadline.estado === "hoy" ? "text-[#C0392B] dark:text-[#FF6B5B] font-medium" : dateInfo.isUrgent ? "text-[#D4860A] dark:text-[#FFAA33] font-medium" : "text-muted-foreground"}`}>
+                        {dateInfo.text}
                       </span>
-                      {deadline.aiDetected && (
-                        <Sparkles className="size-3.5 text-primary" />
+                      {dateInfo.isOverdue && (
+                        <Badge className="bg-[#FCEBEB] text-[#C0392B] dark:bg-[#C0392B]/20 dark:text-[#FF6B5B] border-0 text-[10px] px-1.5 py-0">
+                          Vencido
+                        </Badge>
                       )}
                     </div>
-                    <span className="font-mono text-xs text-muted-foreground">{deadline.expediente}</span>
-                  </Link>
-                </TableCell>
-                <TableCell className="py-3 text-foreground">
-                  {deadline.cliente}
-                </TableCell>
-                <TableCell className="py-3">
-                  <div>
-                    <p className={`text-sm ${deadline.estado === "vencido" ? "text-destructive font-medium" : "text-foreground"}`}>
-                      {getRelativeDate(deadline.vence, deadline.estado)}
-                    </p>
-                    {deadline.estado !== "vencido" && deadline.estado !== "hoy" && (
-                      <p className="text-xs text-muted-foreground">
-                        {formatDate(deadline.vence)}
-                      </p>
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell className="py-3">{getStatusBadge(deadline.estado)}</TableCell>
-                <TableCell className="py-3">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="size-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <MoreHorizontal className="size-4" />
-                        <span className="sr-only">Abrir menú</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem>
-                        Ver
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>Editar</DropdownMenuItem>
-                      <DropdownMenuItem>Archivar</DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="text-destructive focus:text-destructive">
-                        Eliminar
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                  <TableCell className="py-3">{getStatusBadge(deadline.estado)}</TableCell>
+                  <TableCell className="py-3">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="size-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <MoreHorizontal className="size-4" />
+                          <span className="sr-only">Abrir menú</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem>
+                          Ver
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>Editar</DropdownMenuItem>
+                        <DropdownMenuItem>Archivar</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive focus:text-destructive">
+                          Eliminar
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </CardContent>
