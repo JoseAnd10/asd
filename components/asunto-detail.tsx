@@ -244,87 +244,7 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
 
       {/* Split View Layout */}
       <div className="grid gap-6 lg:grid-cols-5">
-        {/* Left Column - Timeline */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Case Info Card */}
-          <Card className="border-border/60 shadow-soft">
-            <CardHeader className="pb-3">
-              <CardTitle className="font-serif text-lg">Información del caso</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Juzgado</p>
-                  <p className="font-medium text-foreground">{caseInfo.juzgado}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Procedimiento</p>
-                  <p className="font-medium text-foreground">{caseInfo.procedimiento}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Cuantía</p>
-                  <p className="font-medium text-foreground">{caseInfo.cuantia}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Contraparte</p>
-                  <p className="font-medium text-foreground">{caseInfo.contraParte}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Timeline */}
-          <Card className="border-border/60 shadow-soft">
-            <CardHeader className="pb-3">
-              <CardTitle className="font-serif text-lg">Cronología procesal</CardTitle>
-              <CardDescription>Hitos y etapas del procedimiento</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative space-y-0">
-                {hitos.map((hito, index) => (
-                  <div key={hito.id} className="relative flex gap-4 pb-6 last:pb-0">
-                    {/* Vertical line */}
-                    {index < hitos.length - 1 && (
-                      <div className={`absolute left-[15px] top-8 h-[calc(100%-16px)] w-px ${
-                        hito.completado ? "bg-primary" : "bg-border"
-                      }`} />
-                    )}
-                    
-                    {/* Icon */}
-                    <div className={`relative z-10 flex size-8 flex-shrink-0 items-center justify-center rounded-full ring-4 ring-card ${
-                      hito.completado
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground border border-border"
-                    }`}>
-                      {hito.completado ? (
-                        <CheckCircle2 className="size-4" strokeWidth={2.5} />
-                      ) : (
-                        <Circle className="size-3" strokeWidth={2} />
-                      )}
-                    </div>
-                    
-                    {/* Content */}
-                    <div className="flex-1 pt-0.5">
-                      <p className={`font-medium leading-tight ${
-                        hito.completado ? "text-foreground" : "text-muted-foreground"
-                      }`}>
-                        {hito.titulo}
-                      </p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {hito.fecha ? formatDate(hito.fecha) : "Pendiente"}
-                      </p>
-                      <p className="mt-1.5 text-sm text-muted-foreground">
-                        {hito.descripcion}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right Column - Details Panel & AI Chat */}
+        {/* Left Column - Plazos, Documentos & AI Chat */}
         <div className="lg:col-span-3 space-y-6">
           {/* Tab selector */}
           <div className="flex gap-1 rounded-lg bg-muted/50 p-1">
@@ -565,6 +485,86 @@ export function AsuntoDetail({ id, titulo, cliente, estado }: AsuntoDetailProps)
                     <span className="sr-only">Enviar</span>
                   </Button>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column - Case Info & Timeline */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Case Info Card */}
+          <Card className="border-border/60 shadow-soft">
+            <CardHeader className="pb-3">
+              <CardTitle className="font-serif text-lg">Información del caso</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Juzgado</p>
+                  <p className="font-medium text-foreground">{caseInfo.juzgado}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Procedimiento</p>
+                  <p className="font-medium text-foreground">{caseInfo.procedimiento}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Cuantía</p>
+                  <p className="font-medium text-foreground">{caseInfo.cuantia}</p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Contraparte</p>
+                  <p className="font-medium text-foreground">{caseInfo.contraParte}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Timeline */}
+          <Card className="border-border/60 shadow-soft">
+            <CardHeader className="pb-3">
+              <CardTitle className="font-serif text-lg">Cronología procesal</CardTitle>
+              <CardDescription>Hitos y etapas del procedimiento</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="relative space-y-0">
+                {hitos.map((hito, index) => (
+                  <div key={hito.id} className="relative flex gap-4 pb-6 last:pb-0">
+                    {/* Vertical line */}
+                    {index < hitos.length - 1 && (
+                      <div className={`absolute left-[15px] top-8 h-[calc(100%-16px)] w-px ${
+                        hito.completado ? "bg-primary" : "bg-border"
+                      }`} />
+                    )}
+                    
+                    {/* Icon */}
+                    <div className={`relative z-10 flex size-8 flex-shrink-0 items-center justify-center rounded-full ring-4 ring-card ${
+                      hito.completado
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground border border-border"
+                    }`}>
+                      {hito.completado ? (
+                        <CheckCircle2 className="size-4" strokeWidth={2.5} />
+                      ) : (
+                        <Circle className="size-3" strokeWidth={2} />
+                      )}
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="flex-1 pt-0.5">
+                      <p className={`font-medium leading-tight ${
+                        hito.completado ? "text-foreground" : "text-muted-foreground"
+                      }`}>
+                        {hito.titulo}
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        {hito.fecha ? formatDate(hito.fecha) : "Pendiente"}
+                      </p>
+                      <p className="mt-1.5 text-sm text-muted-foreground">
+                        {hito.descripcion}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>

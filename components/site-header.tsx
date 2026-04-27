@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Badge } from "@/components/ui/badge"
+import { ThemeToggle } from "@/components/theme-toggle"
 import {
   Popover,
   PopoverContent,
@@ -130,6 +131,9 @@ export function SiteHeader({ title = "Resumen", subtitle }: SiteHeaderProps) {
             <Search className="size-4" strokeWidth={2} />
             <span className="sr-only">Buscar</span>
           </Button>
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
 
           {/* Notifications */}
           <Popover>

@@ -116,9 +116,9 @@ export function KpiCards() {
             key={kpi.label} 
             className={`group relative overflow-hidden border border-border/60 border-l-[3px] ${styles.border} shadow-soft hover:shadow-soft-md transition-all duration-200`}
           >
-            {/* Background Icon - Large and subtle */}
-            <div className="pointer-events-none absolute -right-6 -top-6 opacity-[0.03] transition-transform duration-300 group-hover:scale-110">
-              <Icon className="size-36" strokeWidth={1} />
+            {/* Background Icon - Subtle and compact */}
+            <div className="pointer-events-none absolute -right-2 -top-2 opacity-[0.04] transition-transform duration-300 group-hover:scale-110">
+              <Icon className="size-20" strokeWidth={1.5} />
             </div>
             
             <CardContent className="relative p-5">

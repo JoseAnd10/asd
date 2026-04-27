@@ -170,14 +170,25 @@ export function DeadlinesTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {deadlines.map((deadline) => (
+            {deadlines.map((deadline) => {
+              // Urgency-based background colors
+              const getUrgencyBackground = () => {
+                switch (deadline.estado) {
+                  case "vencido":
+                    return "bg-red-50 hover:bg-red-100/80 dark:bg-red-950/30 dark:hover:bg-red-950/50"
+                  case "hoy":
+                    return "bg-amber-50 hover:bg-amber-100/80 dark:bg-amber-950/30 dark:hover:bg-amber-950/50"
+                  case "proximo":
+                    return "bg-emerald-50/50 hover:bg-emerald-100/60 dark:bg-emerald-950/20 dark:hover:bg-emerald-950/40"
+                  default:
+                    return "bg-card hover:bg-muted/50"
+                }
+              }
+              
+              return (
               <TableRow 
                 key={deadline.id} 
-                className={`group cursor-pointer border-border/40 transition-colors ${
-                  deadline.estado === "vencido" || deadline.estado === "hoy" 
-                    ? "bg-gradient-to-r from-destructive/[0.02] to-transparent hover:from-destructive/[0.04]" 
-                    : "hover:bg-muted/50"
-                }`}
+                className={`group cursor-pointer border-border/40 transition-colors ${getUrgencyBackground()}`}
               >
                 <TableCell className="py-4">
                   {getStatusIcon(deadline.estado)}
@@ -241,7 +252,8 @@ export function DeadlinesTable() {
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            ))}
+              )
+            })}
           </TableBody>
         </Table>
       </CardContent>
